@@ -1,0 +1,3 @@
+:host(.uppercase-text) [part="value"]  {
+    text-transform: uppercase
+}
