@@ -35,10 +35,6 @@ public class Customer extends AbstractEntity {
     private String rfc = "";
 
     @ManyToOne
-    @JoinColumn(name = "billing_address")
-    private Address billingAddress;
-
-    @ManyToOne
     @JoinColumn(name = "address_id")
     private Address address;
 
@@ -123,14 +119,6 @@ public class Customer extends AbstractEntity {
         String customerStr = String.format("%1$3s", customerIndex.toString()).replace(' ', '0');
 
         return "C" + customerStr;
-    }
-
-    public Address getBillingAddress() {
-        return billingAddress;
-    }
-
-    public void setBillingAddress(Address billingAddress) {
-        this.billingAddress = billingAddress;
     }
 
     public String getPhoneNumber() {

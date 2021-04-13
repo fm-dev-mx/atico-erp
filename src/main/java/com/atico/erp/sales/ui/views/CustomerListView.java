@@ -1,5 +1,7 @@
 package com.atico.erp.sales.ui.views;
 
+import com.atico.erp.core.backend.entities.Address;
+import com.atico.erp.core.backend.services.AddressService;
 import com.atico.erp.core.backend.services.AppUserDetailsService;
 import com.atico.erp.core.ui.Notifications;
 import com.atico.erp.core.ui.dialogs.ConfirmationDialog;
@@ -29,6 +31,7 @@ import com.vaadin.flow.router.Route;
 public class CustomerListView extends VerticalLayout {
 
     private CustomerService customerService;
+    private AddressService addressService;
     private AppUserDetailsService appUserDetailsService;
 
     private Customer selectedCustomer = null;
@@ -42,10 +45,11 @@ public class CustomerListView extends VerticalLayout {
     private GridMenuItem exploreMenu;
     private GridMenuItem deleteMenu;
 
-    public CustomerListView(CustomerService customerService,
+    public CustomerListView(CustomerService customerService, AddressService addressService,
                            AppUserDetailsService appUserDetailsService) {
 
         this.customerService = customerService;
+        this.addressService = addressService;
         this.appUserDetailsService = appUserDetailsService;
         setSizeFull();
 
@@ -60,7 +64,7 @@ public class CustomerListView extends VerticalLayout {
         createCustomerButton.addClickListener(event -> {
             createCustomerDialog = new Dialog();
             CreateCustomerForm customerForm
-                    = new CreateCustomerForm(customerService,
+                    = new CreateCustomerForm(customerService,addressService,
                     appUserDetailsService.getLoggedUser()
             );
             customerForm.addListener(CreateCustomerForm.CreateEvent.class, this::createCustomer);
@@ -153,25 +157,6 @@ public class CustomerListView extends VerticalLayout {
             rfcDetail.setSpacing(false);
             return rfcDetail;
         }).setHeader("R.F.C.").setAutoWidth(true);
-
-        // Billing Address
-        grid.addComponentColumn(customer -> {
-
-            Span streetNumberNeighbor = new Span(customer.getBillingAddress().getStreetNumberNeighborhood());
-            streetNumberNeighbor.getStyle().set("color", "var(--lumo-secondary-text-color)");
-            streetNumberNeighbor.getStyle().set("font-size", "var(--lumo-font-size-s)");
-
-            Span cityStateCountry = new Span(customer.getBillingAddress().getCityStateCountry());
-            cityStateCountry.getStyle().set("color", "var(--lumo-secondary-text-color)");
-            cityStateCountry.getStyle().set("font-size", "var(--lumo-font-size-s)");
-
-            VerticalLayout addressDetails = new VerticalLayout(streetNumberNeighbor, cityStateCountry);
-
-            addressDetails.setPadding(false);
-            addressDetails.setSpacing(false);
-
-            return addressDetails;
-        }).setHeader("Billing Address").setAutoWidth(true);
 
         // Address
         grid.addComponentColumn(customer -> {
@@ -268,9 +253,10 @@ public class CustomerListView extends VerticalLayout {
         }
     }
 
-    public void createCustomer(CreateCustomerForm.CreateEvent event) {
+    public void createCustomer(CreateCustomerForm.CreateEvent EventCustomer) {
 
-        Customer insertedCustomer = customerService.insertCustomer(event.getCustomer());
+        Customer insertedCustomer = customerService.insertCustomer(EventCustomer.getCustomer());
+        Address insertedAddress = addressService.insertAddress(EventCustomer.getAddress());
 
         createCustomerDialog.close();
         Notifications.Success("Customer successfully created!");

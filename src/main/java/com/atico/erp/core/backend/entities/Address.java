@@ -46,7 +46,7 @@ public class Address extends AbstractEntity {
     private User createdBy;
 
 
-    @OneToMany(mappedBy = "address_id", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "address", fetch = FetchType.LAZY)
     @Fetch(value = FetchMode.SUBSELECT)
 
 

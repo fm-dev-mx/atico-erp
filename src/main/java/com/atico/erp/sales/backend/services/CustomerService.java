@@ -1,5 +1,7 @@
 package com.atico.erp.sales.backend.services;
 
+import com.atico.erp.core.backend.entities.Address;
+import com.atico.erp.core.backend.repositories.AddressRepository;
 import com.atico.erp.sales.backend.entities.Customer;
 import com.atico.erp.sales.backend.repositories.CustomerRepository;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import java.util.List;
 @Transactional
 public class CustomerService {
     private CustomerRepository customerRepository;
+    private AddressRepository addressRepository;
 
     public CustomerService(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
@@ -42,6 +45,15 @@ public class CustomerService {
 
         // update customer
         return customerRepository.save(customer);
+    }
+
+    public Address insertAddress(Address address) {
+
+        // insert address
+        addressRepository.save(address);
+
+        // update address
+        return addressRepository.save(address);
     }
 
     public void safeDelete(Customer customer) {
